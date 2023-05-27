@@ -5,6 +5,7 @@ from .models import *
 
 menu = ["О сайте", "Добавить статью", "Обратная связь", "Войти"]
 
+# smth
 def index(request):
     posts = InsuranceType.objects.all()
     return render(request, 'mainapp/index.html', {'posts': posts, 'menu': menu, 'title': 'Главная страница'})
