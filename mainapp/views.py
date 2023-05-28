@@ -3,28 +3,40 @@ from django.shortcuts import render, redirect
 
 from .models import *
 
-menu = ["О сайте", "Добавить статью", "Обратная связь", "Войти"]
+menu = [{'title': "Адреса комании", 'url_name': 'address'},
+        {'title': "Заключить договор", 'url_name': 'contract'},
+        {'title': "Оплата", 'url_name': 'pay'},
+        {'title': "Личный кабинет", 'url_name': 'login'}
+]
 
-# smth
+
 def index(request):
     posts = InsuranceType.objects.all()
-    return render(request, 'mainapp/index.html', {'posts': posts, 'menu': menu, 'title': 'Главная страница'})
+    context = {
+        'posts': posts,
+        'menu': menu,
+        'title': 'Виды страхования'
+    }
 
-def types(request):
-    return render(request, 'mainapp/about.html', {'menu': menu, 'title': 'О сайте'})
+    return render(request, 'mainapp/index.html', context=context)
 
-
-def branch(request, catid):
-    if request.POST:
-        print(request.POST)
-
-    return HttpResponse(f"<h1>Статьи по категориям</h1><p>{catid}</p>")
-
-def archive(request, year):
-    if int(year) > 2020:
-        return redirect('home', permanent=False)
-
-    return HttpResponse(f"<h1>Архив по годам</h1><p>{year}</p>")
 
 def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
+
+
+def address(request):
+    return HttpResponse("Адреса комании")
+
+
+def contract(request):
+    return HttpResponse("Заключение контракта")
+
+
+def pay(request):
+    return HttpResponse("Как оплатить")
+
+
+def login(request):
+    return HttpResponse("Авторизация")
+

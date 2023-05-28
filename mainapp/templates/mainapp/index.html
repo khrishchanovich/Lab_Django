@@ -1,18 +1,16 @@
 {% extends 'mainapp/base.html' %}
 
 {% block content %}
-<h1>{{title}}</h1>
-
-<ul>
+<ul class="list-articles">
 	{% for p in posts %}
-	<li>
-		<h2>{{p.title}}</h2>
-		<p>{{p.description}}</p>
-		<p>{{p.rate}}</p>
-		<hr>
-	</li>
+			<li><h2>{{p.title}}</h2>
+	{% autoescape on %}
+	{{p.description|linebreaks|truncatewords:50}}
+	{% endautoescape %}
+				{{p.rate}}
+			<div class="clear"></div>
+			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать информацию</a></p>
+			</li>
 	{% endfor %}
 </ul>
-
 {% endblock %}
-
