@@ -40,3 +40,7 @@ def pay(request):
 def login(request):
     return HttpResponse("Авторизация")
 
+
+def show_info(request, post_id):
+    return HttpResponse(f'Отображение информации о виде страхования с id = {post_id}')
+
