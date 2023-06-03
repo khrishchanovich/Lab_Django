@@ -8,6 +8,8 @@ urlpatterns = [
     path('contract/', contract, name='contract'),
     path('pay/', pay, name='pay'),
     path('login/', login, name='login'),
-    path('post/<int:post_id>/', show_info, name='post'),
-    path('category/<int:cat_id>/', show_cat, name='category')
+    path('post/<slug:post_slug>/', show_info, name='post'),
+    path('category/<slug:cat_slug>/', show_cat, name='category'),
+    path('letter/<slug:let_slug>/', show_let, name='letter'),
+    path('agent/<slug:agent_slug>/', show_agent, name='agent'),
 ]
