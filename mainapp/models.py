@@ -87,7 +87,10 @@ class Contract(models.Model):
     address = models.ForeignKey('InsuranceCompany', on_delete=models.PROTECT, verbose_name='Филиал работника')
     accept_terms = models.BooleanField(default=True, verbose_name='Согласие с условиями договора')
     initial_payment = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Первоначальный взнос')
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+    time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания', null=True)
+
+    def __str__(self):
+        return self.pk
 
     class Meta:
         verbose_name = 'Контракт'
@@ -113,6 +116,9 @@ class InsuranceAgent(models.Model):
 class InsuranceObjects(models.Model):
     name = models.CharField(max_length=100, verbose_name='Объект')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = 'Объект'
