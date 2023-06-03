@@ -38,4 +38,83 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        ordering = ['name']
+
+
+class InsuranceCompany(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Название филиала')
+    address = models.CharField(max_length=100, verbose_name='Адресс')
+    phone_number = models.CharField(max_length=13, verbose_name='Номер телефона')
+    letter_id = models.ForeignKey('Letters', on_delete=models.PROTECT, verbose_name='Начальная буква')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('agent', kwargs={'agent_slug': self.slug})
+
+    class Meta:
+        verbose_name = 'Филлиал'
+        verbose_name_plural = 'Филлиалы'
+        ordering = ['letter_id']
+
+
+class Letters(models.Model):
+    letter = models.CharField(max_length=1, verbose_name='Буква')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+
+    def __str__(self):
+        return self.letter
+
+    def get_absolute_url(self):
+        return reverse('letter', kwargs={'let_slug': self.slug})
+
+    class Meta:
+        verbose_name = 'Буква'
+        verbose_name_plural = 'Буквы'
+        ordering = ['letter']
+
+
+class Contract(models.Model):
+    last_name = models.CharField(max_length=100, verbose_name='Фамилия')
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    middle_name = models.CharField(max_length=100, verbose_name='Отчество')
+    email = models.EmailField(verbose_name='Почта')
+    phone_number = models.CharField(max_length=13, verbose_name='Номер телефона')
+    cat = models.ForeignKey('InsuranceType', on_delete=models.PROTECT, verbose_name='Вид страхования')
+    ins_object = models.ForeignKey('InsuranceObjects', on_delete=models.PROTECT, verbose_name='Объект страхования')
+    address = models.ForeignKey('InsuranceCompany', on_delete=models.PROTECT, verbose_name='Филиал работника')
+    accept_terms = models.BooleanField(default=True, verbose_name='Согласие с условиями договора')
+    initial_payment = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Первоначальный взнос')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+
+    class Meta:
+        verbose_name = 'Контракт'
+        verbose_name_plural = 'Контракты'
         ordering = ['id']
+
+
+class InsuranceAgent(models.Model):
+    last_name = models.CharField(max_length=100, verbose_name='Фамилия')
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    middle_name = models.CharField(max_length=100, verbose_name='Отчество')
+    email = models.EmailField(verbose_name='Почта')
+    phone_number = models.CharField(max_length=13, verbose_name='Номер телефона')
+    address = models.ForeignKey('InsuranceCompany', on_delete=models.PROTECT, verbose_name='Филиал работника')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+
+    class Meta:
+        verbose_name = 'Агент'
+        verbose_name_plural = 'Агенты'
+        ordering = ['last_name']
+
+
+class InsuranceObjects(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Объект')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+
+    class Meta:
+        verbose_name = 'Объект'
+        verbose_name_plural = 'Объекты'
+        ordering = ['name']

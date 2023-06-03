@@ -38,13 +38,13 @@
                     <td valign="top" class="left-chapters">
                         <!--		{% getcats as categories %}-->
                         <ul id="leftchapters">
-                            {% if cat_selected == 0 %}
-                            <li class="selected">Все категории</li>
+                            {% if let_selected == 0 %}
+                            <li class="selected">Все филиалы</li>
                             {% else %}
-                            <li><a href="{% url 'home' %}">Все категории</a></li>
+                            <li><a href="{% url 'address' %}">Все филиалы</a></li>
                             {% endif %}
 
-                            {% show_categories cat_selected=cat_selected %}
+                            {% show_letters let_selected=let_selected %}
                             <!--		<li class="share">-->
                             <!--		<p>Наш канал</p>-->
                             <!--		<a class="share-yt" href="#" target="_blank" rel="nofollow"></a>-->

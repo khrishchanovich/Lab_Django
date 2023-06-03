@@ -1,0 +1,20 @@
+{% extends 'mainapp/base_for_address.html' %}
+
+{% block content %}
+<ul class="list-articles">
+    {% for a in agents %}
+    <li>
+        <div class="article-panel">
+            <p class="first">Категория: {{a.phone_number}}</p>
+            <p class="last">Дата: {{a.email}}</p>
+        </div>
+        <h2>{{a.last_name}}</h2>
+        {% autoescape on %}
+        {{a.name}}
+        {% endautoescape %}
+        {{a.middle_name}}
+        <div class="clear"></div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
