@@ -92,6 +92,9 @@ class Contract(models.Model):
     def __str__(self):
         return self.pk
 
+    # def get_absolute_url(self):
+    #     return reverse('home')
+
     class Meta:
         verbose_name = 'Контракт'
         verbose_name_plural = 'Контракты'
