@@ -41,7 +41,7 @@ class ContractAdmin(admin.ModelAdmin):
     )
     list_display_links = ('id', 'last_name')
     search_fields = ('id', 'last_name')
-    prepopulated_fields = {'slug': ('last_name',)}
+    # prepopulated_fields = {'slug': ('last_name',)}
 
 
 class InsuranceAgentAdmin(admin.ModelAdmin):

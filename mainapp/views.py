@@ -1,33 +1,37 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import AuthenticationForm
 
 from .forms import *
 from .models import *
-
-menu = [{'title': "Адреса компании", 'url_name': 'address'},
-        {'title': "Заключить договор", 'url_name': 'contract'},
-        {'title': "Оплата", 'url_name': 'pay'},
-        {'title': "Личный кабинет", 'url_name': 'login'}
-        ]
+from .utils import *
 
 
-class TypeHome(ListView):
+# menu = [{'title': "Адреса компании", 'url_name': 'address'},
+#         {'title': "Заключить договор", 'url_name': 'contract'},
+#         {'title': "Оплата", 'url_name': 'pay'},
+#         {'title': "Личный кабинет", 'url_name': 'login'}
+#         ]
+
+
+class TypeHome(DataMixin, ListView):
     model = InsuranceType
     template_name = 'mainapp/index.html'
     context_object_name = 'posts'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = 'Виды страхования'
-        context['cat_selected'] = 0
+        c_def = self.get_user_context(title='Виды страхования')
 
-        return context
+        return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self):
         return InsuranceType.objects.filter(is_published=True)
+
 
 # def index(request):
 #     posts = InsuranceType.objects.all()
@@ -73,17 +77,19 @@ class CompanyAddress(ListView):
 #     return render(request, 'mainapp/address.html', context=context)
 #
 
-class AddContract(CreateView):
+class AddContract(LoginRequiredMixin, DataMixin, CreateView):
     form_class = ContractForm
     template_name = 'mainapp/contract.html'
     success_url = reverse_lazy('home')
+    login_url = reverse_lazy('home')
+    raise_exception = True
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = 'Заключение договора о страховании'
+        c_def = self.get_user_context(title='Заключение договора о страховании')
 
-        return context
+        return dict(list(context.items()) + list(c_def.items()))
+
 
 # def contract(request):
 #     if request.method == 'POST':
@@ -101,8 +107,8 @@ def pay(request):
     return HttpResponse("Как оплатить")
 
 
-def login(request):
-    return HttpResponse("Авторизация")
+# def login(request):
+#     return HttpResponse("Авторизация")
 
 
 # def show_info(request, post_slug):
@@ -117,7 +123,7 @@ def login(request):
 #
 #     return render(request, 'mainapp/post.html', context=context)
 
-class ShowInfo(DetailView):
+class ShowInfo(DataMixin, DetailView):
     model = InsuranceType
     template_name = 'mainapp/post.html'
     slug_url_kwarg = 'post_slug'
@@ -125,13 +131,12 @@ class ShowInfo(DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = context['post']
+        c_def = self.get_user_context(title=context['post'])
 
-        return context
+        return dict(list(context.items()) + list(c_def.items()))
 
 
-class TypeCat(ListView):
+class TypeCat(DataMixin, ListView):
     model = InsuranceType
     template_name = 'mainapp/index.html'
     context_object_name = 'posts'
@@ -139,14 +144,14 @@ class TypeCat(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = 'Рубрика - ' + str(context['posts'][0].cat)
-        context['cat_selected'] = context['posts'][0].cat_id
+        c_def = self.get_user_context(title='Рубрика - ' + str(context['posts'][0].cat),
+                                      cat_selected=context['posts'][0].cat_id)
 
-        return context
+        return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self, *, object_list=None, **kwargs):
         return InsuranceType.objects.filter(cat__slug=self.kwargs['cat_slug'])
+
 
 # def show_cat(request, cat_slug):
 #     posts = InsuranceType.objects.filter(cat_id__slug=cat_slug)
@@ -229,3 +234,29 @@ class ShowAgent(ListView):
         context['title'] = company.name
         context['company'] = company
         return context
+
+
+class RegisterUser(DataMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'mainapp/register.html'
+    success_url = reverse_lazy('login')
+
+    def get_context_data(self,*, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Регистрация')
+
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+class LoginUser(DataMixin, LoginView):
+    form_class = AuthenticationForm
+    template_name = 'mainapp/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Авторизация')
+
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        return reverse_lazy('home')

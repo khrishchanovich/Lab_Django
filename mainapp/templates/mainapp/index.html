@@ -11,10 +11,12 @@
 	{% autoescape on %}
 	{{p.description|linebreaks|truncatewords:50}}
 	{% endautoescape %}
-				{{p.rate}}
+			Тариф: {{p.rate}}
 			<div class="clear"></div>
 			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать информацию</a></p>
 			</li>
 	{% endfor %}
 </ul>
+
+
 {% endblock %}
