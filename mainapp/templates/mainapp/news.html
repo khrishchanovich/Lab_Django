@@ -1,0 +1,13 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+  <ul clas="list-articles">
+   {% for article in articles %}
+    <div class="article">
+      <h2>{{ article.title }}</h2>
+      <p>{{ article.description }}</p>
+      <a href="{{ article.url }}">Read more</a>
+    </div>
+      {% endfor %}
+  </ul>
+{% endblock %}
