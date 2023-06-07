@@ -1,0 +1,14 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+<h1>{{ins_types.title}}</h1>
+
+	{% autoescape off %}
+<p>{{ ins_types.content }}</p>
+	{% endautoescape %}
+    <p>Тариф: {{ins_types.rate}}</p>
+    <p>Категория: {{ins_types.cat}}</p>
+
+{% endblock %}
+
+

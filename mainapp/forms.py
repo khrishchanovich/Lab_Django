@@ -1,10 +1,19 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 from .models import *
 import re
+
+
+class InsuranceTypeForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = InsuranceType
+        fields = '__all__'
 
 
 class ContractForm(forms.ModelForm):
@@ -32,7 +41,16 @@ class ContractForm(forms.ModelForm):
 
     class Meta:
         model = Contract
-        fields = '__all__'
+        fields = ['last_name',
+                  'name',
+                  'middle_name',
+                  'email',
+                  'phone_number',
+                  'cat',
+                  'ins_object',
+                  'address',
+                  'accept_terms',
+                  'initial_payment']
 
 
 class RegisterUserForm(UserCreationForm):

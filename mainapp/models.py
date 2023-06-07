@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class InsuranceType(models.Model):
@@ -88,6 +89,7 @@ class Contract(models.Model):
     accept_terms = models.BooleanField(default=True, verbose_name='Согласие с условиями договора')
     initial_payment = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Первоначальный взнос')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания', null=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Клиент')
 
     def __str__(self):
         return self.pk
